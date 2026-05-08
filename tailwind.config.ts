@@ -19,6 +19,7 @@ const config: Config = {
             boxShadow: {
                 // border for active states from Dashkit
                 active: '0 0 0 0.15rem #33a382',
+                'active-sm': '0 0 0 1px #33a382',
             },
             colors: {
                 // TODO: replace with e-text-neutral-400
@@ -99,7 +100,7 @@ const config: Config = {
                 '12-ext': 'repeat(12, minmax(0, 1fr))',
             },
         },
-        /* eslint-disable sort-keys-fix/sort-keys-fix */
+
         screens: {
             'max-sm': getScreenDim('sm', -1),
             'max-md': getScreenDim('md', -1),
@@ -115,7 +116,6 @@ const config: Config = {
             laptop: getScreenDim('lg'),
             desktop: getScreenDim('xl'),
         },
-        /* eslint-enable sort-keys-fix/sort-keys-fix */
     },
 };
 

@@ -1,58 +1,93 @@
+import { type Address, address } from '@solana/kit';
 import { Connection, PublicKey } from '@solana/web3.js';
 import { Cluster, serverClusterUrl } from '@utils/cluster';
 import { NextResponse } from 'next/server';
-import { SOLANA_ATTESTATION_SERVICE_PROGRAM_ADDRESS as SAS_PROGRAM_ID } from 'sas-lib';
+import { deriveAttestationPda, deriveSchemaPda } from 'sas-lib';
 
 import { Logger } from '@/app/shared/lib/logger';
 
-import { CACHE_HEADERS, NO_STORE_HEADERS } from '../../config';
+import { CACHE_HEADERS, ERROR_CACHE_HEADERS } from '../../config';
+import { BLUPRYNT_CONFIG } from '../config';
 
-const BLUPRYNT_CREDENTIAL = process.env.BLUPRYNT_CREDENTIAL_AUTHORITY;
+const RPC_TIMEOUT_MS = 15_000;
+// SAS protocol supports up to 256 schema versions. We decided to use 32 for now.
+const MAX_SCHEMA_VERSIONS = 32;
+
+const connection = new Connection(serverClusterUrl(Cluster.MainnetBeta, ''), {
+    commitment: 'confirmed',
+    fetchMiddleware: (info, init, fetch) => {
+        fetch(info, { ...init, signal: AbortSignal.timeout(RPC_TIMEOUT_MS) });
+    },
+});
+
+async function getSchemaVersionPdas(credentialAddress: Address, schemaName: string): Promise<Address[]> {
+    const versions = await Promise.all(
+        Array.from({ length: MAX_SCHEMA_VERSIONS }, (_, version) =>
+            deriveSchemaPda({
+                credential: credentialAddress,
+                name: schemaName,
+                version,
+            }),
+        ),
+    );
+    return versions.map(([addr]) => addr);
+}
 
 type Params = {
-    params: {
+    params: Promise<{
         mintAddress: string;
-    };
+    }>;
 };
 
-export async function GET(_request: Request, { params: { mintAddress } }: Params) {
+export async function GET(_request: Request, props: Params) {
+    const { mintAddress } = await props.params;
+
     try {
         new PublicKey(mintAddress);
     } catch {
         return NextResponse.json({ error: 'Invalid mint address' }, { status: 400 });
     }
 
-    if (!BLUPRYNT_CREDENTIAL) {
-        return NextResponse.json(
-            { error: 'Bluprynt API is misconfigured' },
-            { headers: NO_STORE_HEADERS, status: 500 },
-        );
-    }
-
     try {
-        const connection = new Connection(serverClusterUrl(Cluster.MainnetBeta, ''), 'confirmed');
+        const credentialAddr = address(BLUPRYNT_CONFIG.credentialAuthority);
+        const mintAddr = address(mintAddress);
 
-        // Attestation layout (1-byte discriminator):
-        // - 1 byte discriminator (offset 0)
-        // - 32 bytes nonce/mint address (offset 1)
-        // - 32 bytes credential pubkey (offset 33)
-        // - 32 bytes schema pubkey (offset 65)
-        const accounts = await connection.getProgramAccounts(new PublicKey(SAS_PROGRAM_ID), {
-            dataSlice: { length: 0, offset: 0 },
-            filters: [
-                { memcmp: { bytes: BLUPRYNT_CREDENTIAL, offset: 33 } },
-                { memcmp: { bytes: mintAddress, offset: 1 } },
-            ],
-        });
+        const schemaPdas = await getSchemaVersionPdas(credentialAddr, BLUPRYNT_CONFIG.schemaName);
 
-        const verified = accounts.length > 0;
+        const attestationPdas = await Promise.all(
+            schemaPdas.map(schema =>
+                deriveAttestationPda({
+                    credential: credentialAddr,
+                    nonce: mintAddr,
+                    schema,
+                }),
+            ),
+        );
+
+        const accountInfos = await connection.getMultipleAccountsInfo(
+            attestationPdas.map(([addr]) => new PublicKey(addr)),
+        );
+        const verified = accountInfos.some(info => info !== null);
 
         return NextResponse.json({ verified }, { headers: CACHE_HEADERS });
     } catch (error) {
+        if (isTimeoutError(error)) {
+            Logger.warn('[api:bluprynt] RPC request timed out', { mintAddress, sentry: true });
+            return NextResponse.json(
+                { error: 'Verification request timed out' },
+                { headers: ERROR_CACHE_HEADERS, status: 504 },
+            );
+        }
+
         Logger.panic(error instanceof Error ? error : new Error('Failed to verify bluprynt data'));
         return NextResponse.json(
             { error: 'Failed to verify bluprynt data' },
-            { headers: NO_STORE_HEADERS, status: 500 },
+            { headers: ERROR_CACHE_HEADERS, status: 500 },
         );
     }
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal/timeout_static#exceptions
+function isTimeoutError(error: unknown): boolean {
+    return error instanceof DOMException && error.name === 'TimeoutError';
 }

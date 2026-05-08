@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import fetch from 'node-fetch';
 
 import { Logger } from '@/app/shared/lib/logger';
 
@@ -7,12 +6,14 @@ const OSEC_REGISTRY_URL = 'https://verify.osec.io';
 const PROGRAM_LIST_CACHE_SECONDS = 300;
 
 type Params = {
-    params: {
+    params: Promise<{
         page: string;
-    };
+    }>;
 };
 
-export async function GET(_request: Request, { params: { page } }: Params) {
+export async function GET(_request: Request, props: Params) {
+    const { page } = await props.params;
+
     try {
         const pageNumber = parseInt(page, 10);
 

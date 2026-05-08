@@ -11,15 +11,15 @@ import { camelToTitleCase, numberWithSeparator, snakeToTitleCase } from '@utils/
 import React, { Fragment, ReactNode, useState } from 'react';
 import { ChevronDown, ChevronUp, CornerDownRight } from 'react-feather';
 
+import { equals, fromBase64, fromHex, toBase64 } from '@/app/shared/lib/bytes';
 import { Logger } from '@/app/shared/lib/logger';
 
-const ANCHOR_SELF_CPI_TAG = Buffer.from('1d9acb512ea545e4', 'hex').reverse();
+const ANCHOR_SELF_CPI_TAG = fromHex('1d9acb512ea545e4').reverse();
 const ANCHOR_SELF_CPI_NAME = 'Anchor Self Invocation';
 
-export function instructionIsSelfCPI(ixData: Buffer | Uint8Array): boolean {
-    const data = Buffer.isBuffer(ixData) ? ixData : Buffer.from(ixData);
-    const slice = data.subarray(0, 8);
-    return ANCHOR_SELF_CPI_TAG.every((byte, index) => slice[index] === byte);
+export function instructionIsSelfCPI(ixData: Uint8Array): boolean {
+    const slice = ixData.subarray(0, 8);
+    return equals(slice, ANCHOR_SELF_CPI_TAG);
 }
 
 /**
@@ -32,7 +32,7 @@ export function decodeEventWithCustomDiscriminator(eventData: string, program: P
     }
 
     // Event data is base64 encoded
-    const data = Buffer.from(eventData, 'base64');
+    const data = fromBase64(eventData);
 
     // Find matching event by comparing discriminators
     for (const event of program.idl.events) {
@@ -70,9 +70,9 @@ export function decodeEventWithCustomDiscriminator(eventData: string, program: P
 
                 try {
                     const coder = new BorshEventCoder(modifiedIdl);
-                    const decoded = coder.decode(Buffer.from(paddedData).toString('base64'));
+                    const decoded = coder.decode(toBase64(paddedData));
                     return decoded;
-                } catch (error) {
+                } catch (_error) {
                     return { data: {}, name: event.name };
                 }
             } else {
@@ -81,7 +81,7 @@ export function decodeEventWithCustomDiscriminator(eventData: string, program: P
                     const coder = new BorshEventCoder(program.idl);
                     const decoded = coder.decode(eventData);
                     return decoded;
-                } catch (error) {
+                } catch (_error) {
                     return { data: {}, name: event.name };
                 }
             }
@@ -123,8 +123,8 @@ export function AnchorProgramName({
  * Decodes an instruction using a custom discriminator matcher that supports variable-length discriminators.
  * Handles both standard 8-byte Anchor discriminators and custom shorter discriminators.
  */
-export function decodeInstructionWithCustomDiscriminator(ixData: Buffer | Uint8Array, program: Program): any | null {
-    const data = Buffer.isBuffer(ixData) ? ixData : Buffer.from(ixData);
+export function decodeInstructionWithCustomDiscriminator(ixData: Uint8Array, program: Program): any | null {
+    const data = ixData;
 
     // Find matching instruction by comparing discriminators
     for (const instruction of program.idl.instructions) {
@@ -164,9 +164,9 @@ export function decodeInstructionWithCustomDiscriminator(ixData: Buffer | Uint8A
 
                 try {
                     const coder = new BorshInstructionCoder(modifiedIdl);
-                    const decoded = coder.decode(Buffer.from(paddedData) as any);
+                    const decoded = coder.decode(paddedData as any);
                     return decoded;
-                } catch (error) {
+                } catch (_error) {
                     // If Borsh decoding fails, return basic instruction info
                     return { data: {}, name: instruction.name };
                 }
@@ -176,7 +176,7 @@ export function decodeInstructionWithCustomDiscriminator(ixData: Buffer | Uint8A
                     const coder = new BorshInstructionCoder(program.idl);
                     const decoded = coder.decode(data as any);
                     return decoded;
-                } catch (error) {
+                } catch (_error) {
                     // If Borsh decoding fails, return basic instruction info
                     return { data: {}, name: instruction.name };
                 }
@@ -441,7 +441,7 @@ function mapField(key: string, value: any, type: IdlType, idl: Idl, keySuffix?: 
                         wordBreak: 'break-all',
                     }}
                 >
-                    {(value as Buffer).toString('base64')}
+                    {toBase64(value as Uint8Array)}
                 </div>
             </SimpleRow>
         );
@@ -490,7 +490,8 @@ function mapField(key: string, value: any, type: IdlType, idl: Idl, keySuffix?: 
                 val => val.name.toLocaleLowerCase() === enumVariantName.toLocaleLowerCase(),
             );
 
-            return variant && variant.fields ? (
+            const variantFields = variant?.fields;
+            return variant && variantFields ? (
                 <ExpandableRow
                     fieldName={itemKey}
                     fieldType={typeDisplayName({ enum: enumVariantName })}
@@ -499,7 +500,7 @@ function mapField(key: string, value: any, type: IdlType, idl: Idl, keySuffix?: 
                 >
                     <Fragment key={keySuffix ? `${key}-${keySuffix}` : key}>
                         {Object.entries(value[enumVariantName]).map(([innerKey, innerValue]: [string, any], index) => {
-                            const innerFieldType = variant.fields![index];
+                            const innerFieldType = variantFields[index];
                             if (!innerFieldType) {
                                 throw Error(
                                     `Could not type definition for ${innerKey} field in user-defined struct ${fieldType.name}`,

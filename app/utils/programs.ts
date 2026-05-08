@@ -1,3 +1,6 @@
+import { TOKEN_PROGRAM_ADDRESS } from '@solana-program/token';
+import { TOKEN_2022_PROGRAM_ADDRESS } from '@solana-program/token-2022';
+
 import { Cluster } from './cluster';
 
 export enum PROGRAM_NAMES {
@@ -5,6 +8,7 @@ export enum PROGRAM_NAMES {
     ADDRESS_LOOKUP_TABLE = 'Address Lookup Table Program',
     COMPUTE_BUDGET = 'Compute Budget Program',
     CONFIG = 'Config Program',
+    FEATURE_GATE = 'Feature Gate Program',
     STAKE = 'Stake Program',
     SYSTEM = 'System Program',
     VOTE = 'Vote Program',
@@ -58,7 +62,7 @@ export enum PROGRAM_NAMES {
     ORCA_AQUAFARM = 'Orca Aquafarm Program',
     ORE = 'ORE Program',
     PORT = 'Port Finance Program',
-    PYTH_DEVNET = 'Pyth Oracle Program', // eslint-disable-line @typescript-eslint/no-duplicate-enum-values -- allow to use same name for different enums
+    PYTH_DEVNET = 'Pyth Oracle Program',
     PYTH_TESTNET = 'Pyth Oracle Program', // eslint-disable-line @typescript-eslint/no-duplicate-enum-values -- allow to use same name for different enums
     PYTH_MAINNET = 'Pyth Oracle Program', // eslint-disable-line @typescript-eslint/no-duplicate-enum-values -- allow to use same name for different enums
     QUARRY_MERGE_MINE = 'Quarry Merge Mine',
@@ -277,6 +281,10 @@ export const PROGRAM_INFO_BY_ID: { [address: string]: ProgramInfo } = {
     Feat1YXHhH6t1juaWF74WLcfv4XoNocjXA6sPWHNgAse: {
         deployments: ALL_CLUSTERS,
         name: PROGRAM_NAMES.FEATURE_PROPOSAL,
+    },
+    Feature111111111111111111111111111111111111: {
+        deployments: ALL_CLUSTERS,
+        name: PROGRAM_NAMES.FEATURE_GATE,
     },
     FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH: {
         deployments: [Cluster.MainnetBeta],
@@ -507,8 +515,8 @@ export const SYSVAR_IDS: { [key: string]: string } = {
 };
 
 export const TOKEN_IDS: { [key: string]: string } = {
-    TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA: 'Token Program',
-    TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb: 'Token-2022 Program',
+    [TOKEN_2022_PROGRAM_ADDRESS]: 'Token-2022 Program',
+    [TOKEN_PROGRAM_ADDRESS]: 'Token Program',
 } as const;
 
 export type TokenProgram = 'spl-token' | 'spl-token-2022';
@@ -520,7 +528,7 @@ export function isTokenProgram(program: string): program is TokenProgram {
     try {
         assertIsTokenProgram(program);
         return true;
-    } catch (e) {
+    } catch (_e) {
         return false;
     }
 }

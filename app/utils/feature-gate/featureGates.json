@@ -1192,7 +1192,7 @@
     "testnet_activation_epoch": 908,
     "devnet_activation_epoch": 1024,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 944,
     "description": ""
   },
   {
@@ -1218,7 +1218,7 @@
     "testnet_activation_epoch": 910,
     "devnet_activation_epoch": 1030,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 947,
     "description": ""
   },
   {
@@ -1244,7 +1244,7 @@
     "testnet_activation_epoch": 911,
     "devnet_activation_epoch": 1034,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 950,
     "description": ""
   },
   {
@@ -1270,7 +1270,7 @@
     "testnet_activation_epoch": 912,
     "devnet_activation_epoch": 1035,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 951,
     "description": ""
   },
   {
@@ -1296,7 +1296,7 @@
     "testnet_activation_epoch": 916,
     "devnet_activation_epoch": 1037,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 954,
     "description": ""
   },
   {
@@ -1320,9 +1320,9 @@
     ],
     "planned_testnet_order": null,
     "testnet_activation_epoch": 929,
-    "devnet_activation_epoch": null,
+    "devnet_activation_epoch": 1044,
     "comms_required": null,
-    "mainnet_activation_epoch": null,
+    "mainnet_activation_epoch": 957,
     "description": ""
   },
   {
@@ -1345,8 +1345,8 @@
       "v3.1.8"
     ],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 931,
+    "devnet_activation_epoch": 1045,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1367,8 +1367,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 937,
+    "devnet_activation_epoch": 1055,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1411,8 +1411,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 936,
+    "devnet_activation_epoch": 1053,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1433,8 +1433,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 939,
+    "devnet_activation_epoch": 1057,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1455,8 +1455,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 940,
+    "devnet_activation_epoch": 1059,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1477,7 +1477,7 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
+    "testnet_activation_epoch": 944,
     "devnet_activation_epoch": null,
     "comms_required": null,
     "mainnet_activation_epoch": null,
@@ -1543,8 +1543,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 942,
+    "devnet_activation_epoch": 1060,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1607,8 +1607,8 @@
     "min_fd_versions": [],
     "min_jito_versions": [],
     "planned_testnet_order": null,
-    "testnet_activation_epoch": null,
-    "devnet_activation_epoch": null,
+    "testnet_activation_epoch": 938,
+    "devnet_activation_epoch": 1056,
     "comms_required": null,
     "mainnet_activation_epoch": null,
     "description": ""
@@ -1628,6 +1628,214 @@
     "min_jito_versions": [],
     "planned_testnet_order": null,
     "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "shredXP8xLjJWp1AWh3gAFsFn4GSH1vohhCMDHw5koU",
+    "title": "SIMD-0337: Markers for Alpenglow Fast Leader Handover, DATA_COMPLETE_SHRED placement rules",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0337-parent-ready-update-marker.md"
+    ],
+    "simds": [
+      "0337"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0"
+    ],
+    "min_fd_versions": [],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "vcmrbYbiMVKaq1snKP6eCacNDcr6qZvpCNUjmk6gxvZ",
+    "title": "SIMD-0340 validate chained block id",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0340-validate-chained-block-id.md"
+    ],
+    "simds": [
+      "0340"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.x"
+    ],
+    "min_fd_versions": [],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": 946,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "STk5Xj8hdAx3sTzmtJ3QysKkq6X2A3yj73JtxttiRyk",
+    "title": "SIMD-0490: Upgrade BPF Stake Program to v5.0.0",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0490-upgrade-stake-to-v5.md"
+    ],
+    "simds": [
+      "490"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0"
+    ],
+    "min_fd_versions": [],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": 943,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "EDGMC5kxFxGk4ixsNkGt8bW7QL5hDMXnbwaZvYMwNfzF",
+    "title": "SIMD-0459: Syscall Parameter Address Restrictions",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0459-syscall-parameter-address-restrictions.md"
+    ],
+    "simds": [
+      "0459"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.0"
+    ],
+    "min_fd_versions": [
+      "0.1"
+    ],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "7VgiehxNxu53KdxgLspGQY8myE6f7UokaWa4jsGcaSz",
+    "title": "SIMD-0460: Virtual Address Space Adjustments",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0460-virtual-address-space-adjustments.md"
+    ],
+    "simds": [
+      "0460"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.0"
+    ],
+    "min_fd_versions": [
+      "0.1"
+    ],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "CR3dVN2Yoo95Y96kLSTaziWDAQT2MNEpiWh5cqVq2pNE",
+    "title": "Account Data Direct Mapping",
+    "simd_link": [
+      ""
+    ],
+    "simds": [],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.0"
+    ],
+    "min_fd_versions": [
+      "0.1"
+    ],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "VAT9huvhPjRN9cyrPytq9rwvEJ3J4ADtjdncgZRyANJ",
+    "title": "SIMD-0357: Alpenglow VAT implementation",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0357-alpenglow_validator_admission_ticket.md"
+    ],
+    "simds": [
+      "0357"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.6"
+    ],
+    "min_fd_versions": [],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "5cC3foj77CWun58pC51ebHFUWavHWKarWyR5UUik7dnC",
+    "title": "SIMD-0178/0189/0377: Enables deployment and execution of SBPFv3 programs",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0178-static-syscalls.md",
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0189-sbpf-stricter-elf-headers.md",
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0377-ebpf-isa-compatibility.md"
+    ],
+    "simds": [
+      "0178",
+      " 0189",
+      " 0377"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0"
+    ],
+    "min_fd_versions": [
+      "v1.0"
+    ],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": null,
+    "devnet_activation_epoch": null,
+    "comms_required": null,
+    "mainnet_activation_epoch": null,
+    "description": ""
+  },
+  {
+    "key": "dcomRRWHXP1FVWPqi9Mm4oxJhF4ehC795SvAtUdA9os",
+    "title": "SIMD-0337: Markers for Alpenglow Fast Leader Handover, DATA_COMPLETE_SHRED placement rules",
+    "simd_link": [
+      "https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0337-parent-ready-update-marker.md"
+    ],
+    "simds": [
+      "0337"
+    ],
+    "owners": [],
+    "min_agave_versions": [
+      "v4.0.0-beta.7"
+    ],
+    "min_fd_versions": [],
+    "min_jito_versions": [],
+    "planned_testnet_order": null,
+    "testnet_activation_epoch": 947,
     "devnet_activation_epoch": null,
     "comms_required": null,
     "mainnet_activation_epoch": null,

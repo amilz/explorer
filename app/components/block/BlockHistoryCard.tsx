@@ -2,6 +2,7 @@ import { Address } from '@components/common/Address';
 import { ErrorCard } from '@components/common/ErrorCard';
 import { Signature } from '@components/common/Signature';
 import { SolBalance } from '@components/common/SolBalance';
+import { estimateRequestedComputeUnits } from '@entities/compute-unit';
 import { useCluster } from '@providers/cluster';
 import { cn } from '@shared/utils';
 import {
@@ -20,7 +21,7 @@ import React, { createRef, useMemo } from 'react';
 import { ChevronDown } from 'react-feather';
 import useAsyncEffect from 'use-async-effect';
 
-import { estimateRequestedComputeUnits } from '@/app/utils/compute-units-schedule';
+import { invariant } from '@/app/shared/lib/invariant';
 
 const PAGE_SIZE = 25;
 
@@ -100,7 +101,9 @@ export function BlockHistoryCard({ block, epoch }: { block: VersionedBlockRespon
                 accountKeysFromLookups: tx.meta?.loadedAddresses,
             });
             indexMap.forEach((count, i) => {
-                const programId = accountKeys.get(i)!.toBase58();
+                const accountKey = accountKeys.get(i);
+                invariant(accountKey, `account key index ${i} out of range`);
+                const programId = accountKey.toBase58();
                 invocations.set(programId, count);
                 const programTransactionCount = invokedPrograms.get(programId) || 0;
                 invokedPrograms.set(programId, programTransactionCount + 1);
@@ -113,14 +116,14 @@ export function BlockHistoryCard({ block, epoch }: { block: VersionedBlockRespon
 
                 logTruncated = parsedLogs[parsedLogs.length - 1].truncated;
                 computeUnits = parsedLogs.map(({ computeUnits }) => computeUnits).reduce((sum, next) => sum + next);
-            } catch (err) {
+            } catch (_err) {
                 // ignore parsing errors because some old logs aren't parsable
             }
 
             let costUnits: number | undefined = undefined;
             try {
                 costUnits = tx.meta?.costUnits ?? 0;
-            } catch (err) {
+            } catch (_err) {
                 // ignore parsing errors because some old logs aren't parsable
             }
 
@@ -171,9 +174,9 @@ export function BlockHistoryCard({ block, epoch }: { block: VersionedBlockRespon
         const showComputeUnits = filteredTxs.every(tx => tx.computeUnits !== undefined);
 
         if (sortMode === 'compute' && showComputeUnits) {
-            filteredTxs.sort((a, b) => b.computeUnits! - a.computeUnits!);
+            filteredTxs.sort((a, b) => (b.computeUnits ?? 0) - (a.computeUnits ?? 0));
         } else if (sortMode === 'txnCost') {
-            filteredTxs.sort((a, b) => b.costUnits! - a.costUnits!);
+            filteredTxs.sort((a, b) => (b.costUnits ?? 0) - (a.costUnits ?? 0));
         } else if (sortMode === 'fee') {
             filteredTxs.sort((a, b) => (b.meta?.fee || 0) - (a.meta?.fee || 0));
         } else if (sortMode === 'reservedCUs') {

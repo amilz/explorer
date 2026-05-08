@@ -39,7 +39,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['${{ needs.read-nvmrc.outputs.node-version }}']
+        node-version: ['${{ needs.read-nvmrc.outputs.node-version }}', '24.x']
 
     steps:
       - name: Checkout
@@ -78,11 +78,14 @@ jobs:
           echo "PNPM version: $(pnpm --version)"
           pnpm install --frozen-lockfile
 
+      - name: Format
+        run: pnpm format:ci
+
+      - name: Lint
+        run: pnpm lint
+
       - name: Build
         run: pnpm build
-
-      - name: Code-style
-        run: pnpm format:ci
 
       - name: Test
         env:
@@ -137,7 +140,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['${{ needs.read-nvmrc.outputs.node-version }}', '22.x']
+        node-version: ['${{ needs.read-nvmrc.outputs.node-version }}', '24.x']
 
     steps:
       - name: Checkout

@@ -2,6 +2,9 @@
 // Temporary fix, copied from: https://github.com/solana-developers/solana-rpc-get-stake-activation/blob/main/web3js-1.0/src/rpc.ts
 import { AccountInfo, Connection, ParsedAccountData, PublicKey, RpcResponseAndContext } from '@solana/web3.js';
 
+import { isBuffer } from '@/app/shared/lib/bytes';
+import { invariant } from '@/app/shared/lib/invariant';
+
 interface StakeActivation {
     status: string;
     active: bigint;
@@ -236,7 +239,8 @@ export async function getStakeActivation(connection: Connection, stakeAddress: P
     } else {
         status = 'inactive';
     }
-    const inactive = BigInt(stakeAccountParsed.value!.lamports) - effective - stakeAccount.meta.rentExemptReserve;
+    invariant(stakeAccountParsed.value, 'stake account value is checked above');
+    const inactive = BigInt(stakeAccountParsed.value.lamports) - effective - stakeAccount.meta.rentExemptReserve;
 
     return {
         active: effective,
@@ -249,7 +253,7 @@ const getStakeAccount = function (
     parsedData: RpcResponseAndContext<AccountInfo<ParsedAccountData | Buffer> | null>,
 ): StakeAccount {
     let discriminant = BigInt(0);
-    if (parsedData.value === null || parsedData.value.data instanceof Buffer) {
+    if (parsedData.value === null || isBuffer(parsedData.value.data)) {
         throw new Error('Account not found');
     }
 
@@ -286,7 +290,7 @@ const getStakeAccount = function (
 const getStakeHistory = function (
     parsedData: RpcResponseAndContext<AccountInfo<ParsedAccountData | Buffer> | null>,
 ): StakeHistoryEntry[] {
-    if (parsedData.value === null || parsedData.value.data instanceof Buffer) {
+    if (parsedData.value === null || isBuffer(parsedData.value.data)) {
         throw new Error('Account not found');
     }
 

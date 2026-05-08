@@ -12,6 +12,7 @@ import { Logger } from '@/app/shared/lib/logger';
 
 export enum IdlVariant {
     Anchor = 'anchor',
+    Codama = 'codama',
     ProgramMetadata = 'program-metadata',
 }
 
@@ -99,7 +100,7 @@ async function fetchAnchorIdlTimestamp(connection: Connection, programAddress: A
             return signatures[0].blockTime;
         }
         return null;
-    } catch (error) {
+    } catch (_error) {
         return null;
     }
 }
@@ -120,7 +121,7 @@ async function fetchPmpIdlTimestamp(connection: Connection, programAddress: Addr
             return signatures[0].blockTime;
         }
         return null;
-    } catch (error) {
+    } catch (_error) {
         return null;
     }
 }

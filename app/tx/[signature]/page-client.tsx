@@ -1,6 +1,5 @@
 'use client';
 
-import { DownloadableDropdown } from '@components/common/Downloadable';
 import { ErrorCard } from '@components/common/ErrorCard';
 import { InfoTooltip } from '@components/common/InfoTooltip';
 import { LoadingCard } from '@components/common/LoadingCard';
@@ -12,6 +11,7 @@ import { SignatureContext } from '@components/instruction/SignatureContext';
 import { InstructionsSection } from '@components/transaction/InstructionsSection';
 import { ProgramLogSection } from '@components/transaction/ProgramLogSection';
 import { TokenBalancesCard } from '@components/transaction/TokenBalancesCard';
+import { estimateRequestedComputeUnitsForParsedTransaction } from '@entities/compute-unit';
 import { CUProfilingSection } from '@features/cu-profiling';
 import { Receipt, ViewReceiptButton } from '@features/receipt';
 import { isReceiptEnabled } from '@features/receipt';
@@ -24,6 +24,7 @@ import {
     useTransactionStatus,
 } from '@providers/transactions';
 import { useFetchTransactionDetails } from '@providers/transactions/parsed';
+import { RefreshButton } from '@shared/ui/refresh-button';
 import { ParsedTransaction, SystemInstruction, SystemProgram, TransactionSignature } from '@solana/web3.js';
 import { Cluster, ClusterStatus } from '@utils/cluster';
 import { displayTimestamp } from '@utils/date';
@@ -35,13 +36,13 @@ import useTabVisibility from '@utils/use-tab-visibility';
 import bs58 from 'bs58';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import React, { Suspense, useEffect, useState } from 'react';
-import { RefreshCw, ZoomIn } from 'react-feather';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import { ZoomIn } from 'react-feather';
 
 import { Button } from '@/app/components/shared/ui/button';
 import { AccountsCard } from '@/app/components/transaction/AccountsCard';
 import { useFetchRawTransaction, useRawTransactionDetails } from '@/app/providers/transactions/raw';
-import { estimateRequestedComputeUnitsForParsedTransaction } from '@/app/utils/compute-units-schedule';
+import { DownloadDropdown } from '@/app/shared/components/DownloadDropdown';
 import { getEpochForSlot } from '@/app/utils/epoch-schedule';
 
 export const AUTO_REFRESH_INTERVAL = 2000;
@@ -95,7 +96,7 @@ export default function TransactionDetailsPageClient({ params: { signature: raw 
         if (decoded.length === 64) {
             signature = raw;
         }
-    } catch (err) {
+    } catch (_err) {
         /* empty */
     }
 
@@ -165,6 +166,9 @@ function StatusCard({ signature, autoRefresh }: SignatureProps & AutoRefreshProp
         additionalParams: new URLSearchParams({ view: 'receipt' }),
         pathname: `/tx/${signature}`,
     });
+
+    const rawMessage = rawDetails?.data?.raw?.message;
+    const serializedRawData = useMemo(() => rawMessage?.serialize(), [rawMessage]);
 
     useEffect(() => {
         if (!rawDetails && clusterStatus === ClusterStatus.Connected) {
@@ -257,7 +261,7 @@ function StatusCard({ signature, autoRefresh }: SignatureProps & AutoRefreshProp
 
     return (
         <div className="card">
-            <div className="card-header align-items-center gap-2">
+            <div className="card-header align-items-center e-gap-2">
                 <h3 className="card-header-title">Overview</h3>
                 <ViewReceiptButton
                     signature={signature}
@@ -273,12 +277,18 @@ function StatusCard({ signature, autoRefresh }: SignatureProps & AutoRefreshProp
                 {autoRefresh === AutoRefresh.Active ? (
                     <span className="spinner-grow spinner-grow-sm"></span>
                 ) : (
-                    <Button variant="outline" size="sm" aria-label="Refresh" onClick={() => fetchStatus(signature)}>
-                        <RefreshCw size={12} />
-                        <span className="d-none d-md-inline">Refresh</span>
-                    </Button>
+                    <RefreshButton analyticsSection="transaction_card" onClick={() => fetchStatus(signature)} />
                 )}
-                <DownloadableDropdown filename={signature} data={rawDetails?.data?.raw?.message.serialize() || null} />
+                <DownloadDropdown
+                    filename={signature}
+                    data={serializedRawData}
+                    loading={rawDetails?.status === FetchStatus.Fetching}
+                    error={
+                        rawDetails?.status === FetchStatus.FetchFailed
+                            ? new Error('Failed to fetch raw transaction')
+                            : undefined
+                    }
+                />
             </div>
 
             <TableCardBody>
